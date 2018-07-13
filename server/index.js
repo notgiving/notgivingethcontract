@@ -35,8 +35,8 @@ app.listen(config.port);
 console.log('Listening on port ', config.port);
 
 
-function balance(address, res) {
-    var balance = tokenContract.methods.balanceOf(address).call().then(function (bal) {
+function balance(add, res) {
+    var balance = tokenContract.methods.balanceOf(add).call().then(function (bal) {
         res.send({ "Balance": bal });
     })
 }
