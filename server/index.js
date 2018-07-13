@@ -26,6 +26,10 @@ app.post('/spot', function (req, res) {
     getTx(payload.tx, res)
 });
 
+app.get('/balance', function (req, res) {
+     balance(req.query.id,res)
+});
+
 
 app.listen(config.port);
 console.log('Listening on port ', config.port);
@@ -42,7 +46,7 @@ function balance(address, res) {
 async function getTx(tx, res) {
     try {
         var tx = await web3.eth.getTransaction(tx);
-        spot(tx.from, tx.to, tx.value.toString(10), res);
+        spot(tx.from, tx.to, tx.value, res);
     } catch (error) {
         console.error("Error while gettin tx details", error);
         res.send({ "Error": error, "rawTransaction": {} });
@@ -57,9 +61,8 @@ async function spot(victimaddress, spamaddress, amount, res) {
 
     var gasPrice = web3.eth.gasPrice;
     var gasLimit = 90713;
-    amount = BigNumber()
 
-    var data = tokenContract.methods.spot(victimaddress, spamaddress, BigNumber(amount)).encodeABI();
+    var data = tokenContract.methods.spot(victimaddress, spamaddress, amount).encodeABI();
     var rawTransaction = {
         "from": address,
         "nonce": web3.utils.toHex(txnCount),
@@ -80,7 +83,7 @@ async function spot(victimaddress, spamaddress, amount, res) {
             rawTransaction.transactionhash = hash
             rawTransaction.blackcointto = spamaddress
             rawTransaction.whitecointto = victimaddress
-            rawTransaction.bwvalue = amount
+            rawTransaction.bwvalue = amount.toString(10)
             res.send(rawTransaction);
         }
         else {
