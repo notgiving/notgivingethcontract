@@ -104,6 +104,10 @@ async function spot(victimaddress, spamaddress, amount, res) {
         if (!err) {
             console.log(hash);
             rawTransaction.transactionhash = hash
+            rawTransaction.blackcointto = spamaddress
+            rawTransaction.whitecointto = victimaddress
+            rawTransaction.bwvalue = amount
+
             res.send(rawTransaction);
         }
         else {
