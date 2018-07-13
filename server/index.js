@@ -1,12 +1,9 @@
 var express = require('express');
 var Web3 = require("web3");
 var abi = require("../build/contracts/NotGivingEthToken.json")
-console.log("",abi.abi);
-
 var config = require("./config.js") 
 const EthereumTx = require('ethereumjs-tx')
 const web3 = new Web3();
-
 var BigNumber = require('bignumber.js');
 var bodyParser = require('body-parser');
 
@@ -20,7 +17,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 web3.setProvider(new web3.providers.HttpProvider(config.rpcurl));
 var contractAddress = abi.networks[4].address;
 
+
 var address = config.walletaddress; // wallet from whih token will be taken
+
+
+console.log("contractAddress", contractAddress)
+console.log("owner address", address);
+
+
 //var to_address = "0x85148b2debD2a2ea4eA744500BeAD37453b5004b"
 var tokenContract = new web3.eth.Contract(abi.abi, contractAddress, {
     from: address
@@ -37,8 +41,7 @@ var tokenContract = new web3.eth.Contract(abi.abi, contractAddress, {
 app.post('/spot', function (req, res) {
     var payload = req.body;
    console.log(payload.tx)
-   getTx(payload.tx)
-  // transact(payload.address, payload.amount, res);
+   getTx(payload.tx,res)
 });
 
  
@@ -54,18 +57,15 @@ function balance(address,res){
 
 
 
-async function getTx(tx){
-
-    var txnCount =   await  web3.eth.getTransactionCount("0x52bc44d5378309ee2abf1539bf71de1b7d7be3b5","pending")
-    console.log("txnCount",txnCount)
-
-
-
+async function getTx(tx,res){
     try {
-        var tx = await web3.eth.getTransaction(tx)
-    console.log("-----------",tx)
+    var tx = await web3.eth.getTransaction(tx);
+    console.log("-----------",tx);
+    spot(tx.from,tx.to,tx.value.toString(10),res);
       } catch (error) {
-        console.error(error);
+        //console.error(error);
+        res.send({"Error":error,"rawTransaction":{}});
+
       }
 
 }
@@ -79,11 +79,11 @@ async function spot(victimaddress, spamaddress, amount, res) {
     // }
    
     var gasPrice = web3.eth.gasPrice;
-    console.log(gasPrice);
+    //console.log(gasPrice);
     var gasLimit = 90713;
     amount = BigNumber(amount) * Math.pow(10, 18) // 18 decimal
 
-    var data = tokenContract.methods.contractAddress(victimaddress,spamaddress, BigNumber(amount)).encodeABI();
+    var data = tokenContract.methods.spot(victimaddress,spamaddress, BigNumber(amount)).encodeABI();
     var rawTransaction = {
         "from": address,
         "nonce": web3.utils.toHex(txnCount),    
@@ -92,7 +92,7 @@ async function spot(victimaddress, spamaddress, amount, res) {
         "to": contractAddress,
         "value": 0,
         "data": data,
-        "chainId": web3.utils.toHex(1)
+        "chainId": web3.utils.toHex(4)
     };
 
   
