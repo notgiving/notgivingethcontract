@@ -1,10 +1,4 @@
-// Allows us to use ES6 in our migrations and tests.
-require('babel-register')
 var HDWalletProvider = require("truffle-hdwallet-provider");
-
-
-const createKeystoreProvider = memoizeKeystoreProviderCreator()
-
 
 var mnemonic = "really there is no ether in this seed why are you still reading it";
 
