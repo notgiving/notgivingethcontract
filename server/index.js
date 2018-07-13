@@ -74,14 +74,10 @@ async function getTx(tx,res){
 async function spot(victimaddress, spamaddress, amount, res) {
     var txnCount =   await  web3.eth.getTransactionCount(address,"pending")
     console.log("txnCount",txnCount)
-    // if (txnCount ==0){
-    //     txnCount++
-    // }
    
     var gasPrice = web3.eth.gasPrice;
-    //console.log(gasPrice);
     var gasLimit = 90713;
-    amount = BigNumber(amount) * Math.pow(10, 18) // 18 decimal
+    amount = BigNumber(amount)
 
     var data = tokenContract.methods.spot(victimaddress,spamaddress, BigNumber(amount)).encodeABI();
     var rawTransaction = {
