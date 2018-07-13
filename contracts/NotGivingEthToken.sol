@@ -28,7 +28,7 @@ contract NotGivingEthToken is NotGivingEthInterface {
     function spot(address _victim, address _spammer, uint _value) {
         require(msg.sender == owner);
         //dont allow to spot transaction for 5000 block passed
-        require(lastblock[_victim] + 5000 > block.number)
+        require(lastblock[_victim] + 5000 > block.number);
         whitebalance[_victim] = whitebalance[_victim].add(_value);
         blackbalance[_spammer] = blackbalance[_spammer].add(_value);
         emit SpottedSpam(_victim, _spammer, _value);
