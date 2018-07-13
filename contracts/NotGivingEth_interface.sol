@@ -1,0 +1,10 @@
+pragma solidity ^0.4.11;
+
+contract NotGivingEthInterface {
+    uint public totalSupply;
+    function balanceOf(address who) constant returns (uint);
+    function transfer(address to, uint value);
+    function transfer(address to, uint value, bytes data);
+    event Transfer(address indexed from, address indexed to, uint value, bytes data);
+    event SpottedSpam(address victim, address  spammer, uint value);
+}
