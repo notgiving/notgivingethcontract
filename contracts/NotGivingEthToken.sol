@@ -10,6 +10,8 @@ contract NotGivingEthToken is NotGivingEthInterface {
 
     mapping(address => uint) whitebalance;
     mapping(address => uint) blackbalance;
+    mapping(address => uint) lastblock;
+
 
     //this will be called by owner, in our case trading ui
     function transferWhiteCoin(address _sellto, uint _value){
@@ -25,6 +27,8 @@ contract NotGivingEthToken is NotGivingEthInterface {
     //only owner can call, called from dapp
     function spot(address _victim, address _spammer, uint _value) {
         require(msg.sender == owner);
+        //dont allow to spot transaction for 5000 block passed
+        require(lastblock[_victim] + 5000 > block.number)
         whitebalance[_victim] = whitebalance[_victim].add(_value);
         blackbalance[_spammer] = blackbalance[_spammer].add(_value);
         emit SpottedSpam(_victim, _spammer, _value);
