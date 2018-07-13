@@ -1,7 +1,6 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.24;
 
-contract NotGivingEthInterface {
-    uint public totalSupply;
-    function balanceOf(address who) constant returns (uint);
+interface NotGivingEthInterface {
+    function balanceOf(address who) constant external returns (uint);
     event SpottedSpam(address victim, address  spammer, uint value);
 }
