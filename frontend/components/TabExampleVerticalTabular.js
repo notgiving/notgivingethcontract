@@ -63,7 +63,9 @@ class TabExampleVerticalTabular extends React.Component {
 
   checkBalanceClick = async () => {
 
-    var addr  = await web3.utils.toChecksumAddress(this.state.bAddr);
+    var addr  = await web3.utils.toChecksumAddress(this.state.bAdrr);
+    console.log("addr",addr)
+
     let black = await NotGivingEthT.methods.balanceOf(addr).call();
     let white = await NotGivingEthT.methods.balanceOfWhite(addr).call();
     this.setState({ blcCount:black,whiteCount:white });
@@ -144,7 +146,7 @@ class TabExampleVerticalTabular extends React.Component {
       <Grid.Row stretched>
         <Grid.Column>
         <Input ref="addr" onChange={event =>
-          this.setState({ bAddr: event.target.value })}
+          this.setState({ bAdrr: event.target.value })}
           placeholder='Address...' />
         <hr/>
         </Grid.Column>
