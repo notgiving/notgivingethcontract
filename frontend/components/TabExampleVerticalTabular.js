@@ -23,6 +23,7 @@ class TabExampleVerticalTabular extends React.Component {
     bAdrr:'',
     blcCount:'',
     whiteCount:'',
+    victimSelected:'',
     victims:[],
     inlineStyle : {
       modal : {
@@ -36,10 +37,20 @@ class TabExampleVerticalTabular extends React.Component {
   async componentDidMount()
   {
     let victims = await NotGivingEthT.methods.listOpenVictims().call();
+    console.log(victims);
     this.setState({victims:victims  });
   }
   modalClose = () =>{
     this.setState({ open: false });
+  }
+
+  approve = async () =>{
+    //let victims = await NotGivingEthT.methods.approve().call();
+    const vs = this.state.victimSelected;
+    await NotGivingEthT.methods.approve().send({
+      from: {vs}
+    });
+
   }
 
   handleClick = async () => {
@@ -131,6 +142,14 @@ class TabExampleVerticalTabular extends React.Component {
                   </Grid.Column>
                   <Grid.Column width={4}>
                   <Button onClick={this.handleClick} primary>Spotted</Button>
+                  </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                  <Grid.Column>
+                    <Dropdown placeholder='Transcation' selection options={this.state.victims} />
+                  </Grid.Column>
+                  <Grid.Column>
+                    <Button onClick={this.approve} primary>Approve</Button>
                   </Grid.Column>
                 </Grid.Row>
               </Grid>
