@@ -5,7 +5,7 @@ import { Link } from '../routes';
 export default () => {
   return (
     <Menu style={{ marginTop: '10px' }}>
-      <Link>
+      <Link route="/">
         <a className="item">NotGiving.ETH</a>
       </Link>
     </Menu>

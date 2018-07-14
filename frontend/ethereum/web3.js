@@ -12,8 +12,8 @@ if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
     'https://rinkeby.infura.io/'
   );
   web3 = new Web3(provider);
-  let ws_provider = 'wss://rinkeby.infura.io/ws'
-  let web3ws = new Web3(new Web3.providers.WebsocketProvider(ws_provider))
+  // let ws_provider = 'wss://rinkeby.infura.io/ws'
+  // let web3ws = new Web3(new Web3.providers.WebsocketProvider(ws_provider))
 }
 
 export default web3;

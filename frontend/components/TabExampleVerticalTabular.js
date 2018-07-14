@@ -36,16 +36,15 @@ class TabExampleVerticalTabular extends React.Component {
 
   async componentDidMount()
   {
-    let victims = await NotGivingEthT.methods.listOpenVictims().call();
-    console.log(victims);
-    this.setState({victims:victims  });
+    // let victims = await NotGivingEthT.methods.listOpenVictims().call();
+    // console.log(victims);
+    // this.setState({victims:victims  });
   }
   modalClose = () =>{
     this.setState({ open: false });
   }
 
   approve = async () =>{
-    //let victims = await NotGivingEthT.methods.approve().call();
     const vs = this.state.victimSelected;
     await NotGivingEthT.methods.approve().send({
       from: {vs}
