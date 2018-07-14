@@ -56,8 +56,11 @@ class TabExampleVerticalTabular extends React.Component {
   }
 
   tradeClick = async () =>{
+    console.log("tradeClick add" , this.state.tAddr)
+    console.log("tradeClick val" , this.state.tVal)
+
      await NotGivingEthT.methods
-      .TransferWhiteCoin(this.state.tAddr,this.state.tVal)
+      .transferWhiteCoin(this.state.tAddr,this.state.tVal)
       .call();
   };
 
@@ -67,6 +70,8 @@ class TabExampleVerticalTabular extends React.Component {
     console.log("addr",addr)
 
     let black = await NotGivingEthT.methods.balanceOf(addr).call();
+    console.log("black"+black)
+
     let white = await NotGivingEthT.methods.balanceOfWhite(addr).call();
     this.setState({ blcCount:black,whiteCount:white });
   };
