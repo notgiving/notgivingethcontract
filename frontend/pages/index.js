@@ -12,7 +12,8 @@ import web3 from '../ethereum/web3';
 class CampaignIndex extends Component {
 
   state = {
-    result:''
+    result:'',
+    victims:[]
   };
 
   componentDidMount() {
@@ -30,8 +31,12 @@ class CampaignIndex extends Component {
     const accounts = await web3.eth.getAccounts();
     let black = await NotGivingEthT.methods.balanceOf(accounts[0]).call();
     let white = await NotGivingEthT.methods.balanceOfWhite(accounts[0]).call();
+
     console.log(black);
     console.log(white);
+
+
+
     //
     // all_events.watch(function(error, result) {
     //     if (!error) {
