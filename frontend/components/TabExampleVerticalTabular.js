@@ -7,7 +7,7 @@ import web3 from '../ethereum/web3';
 import web3ws from '../ethereum/web3ws';
 import axios from 'axios';
 import request from "superagent";
-import { Header, Icon, Modal } from 'semantic-ui-react';
+import { Header, Icon, Modal,Dropdown } from 'semantic-ui-react';
 import NotGivingEthT from '../ethereum/NotGivingEthT';
 // import { Button, Icon, Modal } from 'semantic-ui-react';
 
@@ -15,6 +15,7 @@ class TabExampleVerticalTabular extends React.Component {
 
   state = {
     addr:'',
+    val:'',
     open: false,
     msg:'',
     tAddr:'',
@@ -22,6 +23,7 @@ class TabExampleVerticalTabular extends React.Component {
     bAdrr:'',
     blcCount:'',
     whiteCount:'',
+    victims:[],
     inlineStyle : {
       modal : {
         marginTop: '1000px !important',
@@ -31,28 +33,38 @@ class TabExampleVerticalTabular extends React.Component {
     }
   }
 
-
-
+  async componentDidMount()
+  {
+    let victims = await NotGivingEthT.methods.listOpenVictims().call();
+    this.setState({victims:victims  });
+  }
   modalClose = () =>{
     this.setState({ open: false });
   }
 
   handleClick = async () => {
-    const addr = this.state.addr;
-    const res = await request
-    .post('http://159.65.157.34:3001/spot')
-    .set('Content-Type', 'application/json')
-    .send({ tx: {addr}});
-    this.setState({ open: true });
-    console.log(res);
-    var result = JSON.parse(res.text);
-    console.log(result);
-    var msg = result['blackcointto']+' has been awarded '+web3.utils.fromWei(result['bwvalue'], 'ether')+' black coins'+'\n';
-    var msg1 = result['whitecointto']+' has been awarded '+web3.utils.fromWei(result['bwvalue'], 'ether')+' white coins';
-    console.log(msg);
-    this.setState({ msg: msg+msg1 });
+    // const addr = this.state.addr;
+    // const res = await request
+    // .post('http://159.65.157.34:3001/spot')
+    // .set('Content-Type', 'application/json')
+    // .send({ tx: {addr}});
+    // this.setState({ open: true });
+    // console.log(res);
+    // var result = JSON.parse(res.text);
+    // console.log(result);
+    // var msg = result['blackcointto']+' has been awarded '+web3.utils.fromWei(result['bwvalue'], 'ether')+' black coins'+'\n';
+    // var msg1 = result['whitecointto']+' has been awarded '+web3.utils.fromWei(result['bwvalue'], 'ether')+' white coins';
+    // console.log(msg);
+    // this.setState({ msg: msg+msg1 });
     // console.log(addr);
     // console.log(result);
+
+    console.log("HandleClick add" , this.state.addr)
+    console.log("HandleClick val" , this.state.val)
+
+     await NotGivingEthT.methods
+      .transferWhiteCoin(this.state.addr,this.state.val)
+      .call();
   }
 
   tradeClick = async () =>{
@@ -103,68 +115,72 @@ class TabExampleVerticalTabular extends React.Component {
       }
     ];
 
-
-  const panes = [
-    { menuItem: 'Mark Black', render: () => (
-          <Tab.Pane>
-          <Grid columns='equal'>
-              <Grid.Row>
+    const panes = [
+    { menuItem: 'Mark Black', render: () =>
+            (   <Tab.Pane>
+                <Grid columns='equal'>
+                <Grid.Row stretched>
+                  <Grid.Column>
+                  <Input onChange={event =>
+                    this.setState({ addr: event.target.value })}
+                    placeholder='Address...' />
+                  <hr/>
+                  <Input onChange={event =>
+                    this.setState({ val: event.target.value })}
+                    placeholder='Value...' />
+                  </Grid.Column>
+                  <Grid.Column width={4}>
+                  <Button onClick={this.handleClick} primary>Spotted</Button>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
+                </Tab.Pane>)
+    },
+      { menuItem: 'Marketplace', render: () =>
+        (   <Tab.Pane>
+            <Grid columns='equal'>
+            <Grid.Row stretched>
               <Grid.Column>
               <Input onChange={event =>
-                this.setState({ addr: event.target.value })}
-                 fluid placeholder='Transcation Id' />
+                this.setState({ tAddr: event.target.value })}
+                placeholder='Address...' />
+              <hr/>
+              <Input onChange={event =>
+                this.setState({ tVal: event.target.value })}
+                placeholder='Value...' />
               </Grid.Column>
-              <Grid.Column>
-              <Button onClick={this.handleClick} primary>Spotted</Button>
-
+              <Grid.Column width={4}>
+              <Button onClick={this.tradeClick} primary>Trade</Button>
               </Grid.Column>
-              </Grid.Row>
+            </Grid.Row>
           </Grid>
-          </Tab.Pane>) },
-    { menuItem: 'Marketplace', render: () =>
-      (   <Tab.Pane>
-          <Grid columns='equal'>
-          <Grid.Row stretched>
-            <Grid.Column>
-            <Input onChange={event =>
-              this.setState({ tAddr: event.target.value })}
-              placeholder='Address...' />
-            <hr/>
-            <Input onChange={event =>
-              this.setState({ tVal: event.target.value })}
-              placeholder='Value...' />
-            </Grid.Column>
-            <Grid.Column width={4}>
-            <Button onClick={this.tradeClick} primary>Trade</Button>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-          </Tab.Pane>)
-      },
-    { menuItem: 'My Account', render: () => (
-      <Tab.Pane>
-          <Card.Group centered items={items} />
-      </Tab.Pane>) },
-    { menuItem: 'Check Balances', render: () => (
-      <Tab.Pane>
-      <Grid columns='equal'>
-      <Grid.Row stretched>
-        <Grid.Column>
-        <Input ref="addr" onChange={event =>
-          this.setState({ bAdrr: event.target.value })}
-          placeholder='Address...' />
-        <hr/>
-        </Grid.Column>
-        <Grid.Column width={4}>
-        <Button onClick={this.checkBalanceClick} primary>Check Balance</Button>
-        </Grid.Column>
-      </Grid.Row>
-      <Grid.Row stretched>
-        <Card.Group centered items={balanceItems} />
-      </Grid.Row>
-    </Grid>
-      </Tab.Pane>) }
-  ];
+            </Tab.Pane>)
+        },
+      { menuItem: 'My Account', render: () => (
+        <Tab.Pane>
+            <Card.Group centered items={items} />
+        </Tab.Pane>) },
+      { menuItem: 'Check Balances', render: () => (
+        <Tab.Pane>
+        <Grid columns='equal'>
+        <Grid.Row stretched>
+          <Grid.Column>
+          <Input ref="addr" onChange={event =>
+            this.setState({ bAdrr: event.target.value })}
+            placeholder='Address...' />
+          <hr/>
+          </Grid.Column>
+          <Grid.Column width={4}>
+          <Button onClick={this.checkBalanceClick} primary>Check Balance</Button>
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row stretched>
+          <Card.Group centered items={balanceItems} />
+        </Grid.Row>
+      </Grid>
+        </Tab.Pane>) }
+    ];
+
 
     return(
       <div>
