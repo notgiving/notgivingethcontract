@@ -96,6 +96,7 @@ contract NotGivingEthToken is NotGivingEthInterface {
       emit TransferWhiteCoin(_sellto, _value);
     }
 
+/*
     //only owner can call, called from dapp
     function spot(address _victim, address _spammer, uint _value) public {
         require(_victim != address(0),"Victim cannot be address(0)");
@@ -114,6 +115,26 @@ contract NotGivingEthToken is NotGivingEthInterface {
         openVictimList.push(_victim);
          
         emit SpotSubmitted(_victim, _spammer, _value);
+    }
+*/    
+        //only owner can call, called from dapp
+    function spotByUser(address _spammer, uint _value) public {
+        require(msg.sender != address(0),"Victim cannot be address(0)");
+        require(_spammer != address(0),"Spammer cannot be address(0)");
+        
+        state = SpotState.Open;
+        
+        SubmittedProposal memory newProposal = SubmittedProposal({
+           victim: msg.sender,
+           spammer: _spammer,
+           amountRequested: _value,
+           approvalCount: 0
+        });
+        
+        proposals[msg.sender] = newProposal;
+        openVictimList.push(msg.sender);
+         
+        emit SpotSubmitted(msg.sender, _spammer, _value);
     }
 
     function approve(address _victim) public isSigner inState(SpotState.Open) {
