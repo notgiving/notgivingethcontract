@@ -10,6 +10,14 @@ var app = express();
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+
 web3.setProvider(new web3.providers.HttpProvider(config.rpcurl));
 var contractAddress = abi.networks[4].address;
 
@@ -23,7 +31,8 @@ var tokenContract = new web3.eth.Contract(abi.abi, contractAddress, {
 
 app.post('/spot', function (req, res) {
     var payload = req.body;
-    getTx(payload.tx, res)
+   console.log("payload.tx", payload.tx.addr)
+    getTx(payload.tx.addr, res)
 });
 
 app.get('/balance', function (req, res) {
